@@ -1,0 +1,7 @@
+Library/
+Build/
+logs/
+UserSettings/
+Temp/
+.vs/
+ProjectSettings/
