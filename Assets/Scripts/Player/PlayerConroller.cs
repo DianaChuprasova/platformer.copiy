@@ -10,12 +10,22 @@ public class PlayerConroller : MonoBehaviour
     public float velocity;
     public float jumpHeight;
     public Transform groundCheck;
+    public int HealthPoints;
+    int CurrentHealhPoints;
+    bool isHit = false;
+    public Main main;
 
     // Start is called before the first frame update
     void Start()
     {
        rb = GetComponent<Rigidbody2D>(); 
        animator = GetComponent<Animator>();
+       CurrentHealhPoints = HealthPoints;
+    }
+
+    void Lose()
+    {
+        main.GetComponent<Main>().Lose();
     }
 
     // Update is called once per frame
@@ -67,5 +77,44 @@ public class PlayerConroller : MonoBehaviour
         }
     }
 
+    public void RecountHealthPoints(int deltaHealthPoints)
+    {
+        CurrentHealhPoints += deltaHealthPoints;
+        if (deltaHealthPoints < 0)
+        {
+            StopCoroutine(OnHit());
+            isHit = true;
+            StartCoroutine(OnHit());
+        }
+        if (CurrentHealhPoints <= 0)
+        {
+            GetComponent<CapsuleCollider2D>().enabled = false;
+            Invoke("Lose", 2f);
+        }
+        
+    }
 
+    IEnumerator OnHit()
+    {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (isHit)
+        {
+            sr.color = new Color(1F, sr.color.g - 0.02f, sr.color.b - 0.02f);
+        }
+       else
+       {
+           sr.color = new Color(1F, sr.color.g + 0.02f, sr.color.b + 0.02f);
+       }
+       if (sr.color.g == 1f)
+       {
+           StopCoroutine(OnHit());
+       }
+       if (sr.color.g <= 0f)
+       {
+           isHit = false;
+       }
+        yield return new WaitForSeconds(0.02f);
+        StartCoroutine(OnHit());
+   
+    }
 }
