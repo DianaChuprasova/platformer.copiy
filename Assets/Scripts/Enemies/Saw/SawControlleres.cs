@@ -18,9 +18,13 @@ public class SawControlleres : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Player")
+        print(collision.gameObject.tag);
+        if (collision.gameObject.tag == "Player") 
         {
-            print("Касание игрока");
+            PlayerConroller player = collision.gameObject.GetComponent<PlayerConroller>();
+            player.RecountHealthPoints(-1); 
+            Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
+            rb.AddForce(transform.up * 5F, ForceMode2D.Impulse);
         }
     }
 }
